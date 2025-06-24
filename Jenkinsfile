@@ -12,17 +12,20 @@ pipeline {
     stages {
         stage("Maven Build") {
             steps {
-                sh 'mvn clean deploy -DskipTests'
+                sh 'mvn clean deploy -Dmaven.test.skip=true'
             }
         }
-
-        stage('SonarQube analysis') {
-            environment {
-                scannerHome = tool 'sonarqube-scanner'
-            }
+        stage("Unit Test") {
             steps {
-             // must match the name of an actual scanner installation directory on your Jenkins build agent
-            withSonarQubeEnv('sonarqube-servers') { // If you have configured more than one global server connection, you can specify its name as configured in Jenkins
+                sh 'mvn surefire-report:report'
+            }
+        }
+        stage('SonarQube analysis') { //https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/ci-integration/jenkins-integration/add-analysis-to-job/#other
+            environment {
+                scannerHome = tool 'sonarqube-scanner' // Tools > SonarScanner
+             } 
+            steps {
+            withSonarQubeEnv('sonarqube-servers') { // System > SonarQube Servers
             sh "${scannerHome}/bin/sonar-scanner"
             }
             }
