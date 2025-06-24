@@ -5,10 +5,14 @@ pipeline {
         }
     }
 
+    environment {
+        PATH = /opt/apache-maven-3.9.10/bin
+    }
+
     stages {
-        stage('Clone code') {
+        stage("Maven Build") {
             steps {
-                git branch: 'main', url: 'https://github.com/madhav83lv/tweet-trend-new.git'
+                sh 'mvn clean deploy'
             }
         }
     }
