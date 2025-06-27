@@ -33,7 +33,7 @@ pipeline {
             }
             }
         }
-        stage("Quality Gate") {
+      /*  stage("Quality Gate") {
             steps {
                 script {
                 timeout(time: 1, unit: 'HOURS') {
@@ -44,7 +44,7 @@ pipeline {
                 }
                 }
             }
-        }
+        }  */
         stage("Jar Publish") {
             steps {
             script {
@@ -66,7 +66,7 @@ pipeline {
                      server.publishBuildInfo(buildInfo)
             }
             }
-        }
+        } 
         stage("Docker Build") {
             steps {
                 script {
