@@ -5,10 +5,25 @@ pipeline {
         }
     }
 
+    environment {
+        PATH = "/opt/apache-maven-3.9.10/bin:$PATH"
+    }
+
     stages {
-        stage('Clone code') {
+        stage("Maven Build") {
             steps {
-                git branch: 'main', url: 'https://github.com/madhav83lv/tweet-trend-new.git'
+                sh 'mvn clean deploy -DskipTests'
+            }
+        }
+
+        stage('SonarQube analysis') {
+            environment {
+                scannerHome = tool 'sonarqube-scanner' // Tools > SonarScanner
+             } 
+            steps {
+            withSonarQubeEnv('sonarqube-servers') { // System > SonarQube Servers
+            sh "${scannerHome}/bin/sonar-scanner"
+            }
             }
         }
     }
